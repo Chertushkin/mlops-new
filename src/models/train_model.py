@@ -74,8 +74,8 @@ def train_model(
             running_corrects = 0
             i = 0
 
-            logging.info("Length in batches: ", len(dataloaders[phase]))
-            logging.info("Started training: ", len(dataloaders[phase]))
+            logging.info(f"Length in batches: {len(dataloaders[phase])}")
+            logging.info("Started training...")
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
                 i += 1
@@ -135,7 +135,7 @@ def main(data_dir):
     cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
-    logger.info("making final data set from raw data")
+    logger.info("training model from processed data")
     dataloaders, dataset_sizes = prepare_loaders(data_dir)
 
     model_ft = models.resnet18(pretrained=True)
