@@ -63,6 +63,15 @@ else
 	aws s3 sync s3://$(BUCKET)/data/ data/ --profile $(PROFILE)
 endif
 
+## Upload Models to S3
+sync_models_to_s3:
+ifeq (default,$(PROFILE))
+	aws s3 sync models/ s3://$(BUCKET)/models/
+else
+	aws s3 sync models/ s3://$(BUCKET)/models/ --profile $(PROFILE)
+endif
+
+
 ## Set up python interpreter environment
 create_environment:
 ifeq (True,$(HAS_CONDA))
