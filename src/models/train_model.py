@@ -117,8 +117,6 @@ def train_model(
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
-        logging.info()
-
     time_elapsed = time.time() - since
     logging.info(
         f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s"
@@ -157,12 +155,12 @@ def main(data_dir):
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
     trained_model = train_model(
-        model_ft, criterion, optimizer_ft, exp_lr_scheduler, dataloaders, dataset_sizes
+        model_ft, criterion, optimizer_ft, exp_lr_scheduler, dataloaders, dataset_sizes, num_epochs=1
     )
     logging.info("Model was trained")
     logger.info(trained_model)
     path = "models/version=1.pth"
-    torch.save(train_model, path)
+    torch.save(trained_model, path)
 
 
 if __name__ == "__main__":
