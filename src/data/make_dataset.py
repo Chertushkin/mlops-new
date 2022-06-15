@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-import click
 import logging
 import os
-from pathlib import Path
-from collections import defaultdict
-import pandas as pd
 import shutil as sh
+from collections import defaultdict
 from pathlib import Path
-from sklearn.model_selection import train_test_split
+
+import click
+import pandas as pd
 from dotenv import find_dotenv, load_dotenv
+from sklearn.model_selection import train_test_split
 
 
 def move_files(filelist, phase, input_filepath, output_filepath):
