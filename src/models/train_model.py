@@ -72,9 +72,10 @@ def train_model(
 
             running_loss = 0.0
             running_corrects = 0
-
+            i = 0
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
+                i += 1
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 # print(labels)
@@ -96,6 +97,10 @@ def train_model(
                 # statistics
                 running_loss += loss.item() * inputs.size(0)
                 running_corrects += torch.sum(preds == labels.data)
+
+                if i % 50 == 0:
+                    logging.info(f"Batch processed {i}...")
+                    
             if phase == "train":
                 scheduler.step()
 
@@ -149,7 +154,7 @@ def main(data_dir):
     trained_model = train_model(
         model_ft, criterion, optimizer_ft, exp_lr_scheduler, dataloaders, dataset_sizes
     )
-    logging.info(f"Model was trained")
+    logging.info("Model was trained")
     logger.info(trained_model)
 
 

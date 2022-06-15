@@ -33,6 +33,10 @@ data: requirements
 features:
 	$(PYTHON_INTERPRETER) src/features/build_features.py data/processed data/interim
 
+## Train model
+train:
+	$(PYTHON_INTERPRETER) src/model/train_model.py data/processed/labeled-images
+
 
 ## Delete all compiled Python files
 clean:
