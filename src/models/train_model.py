@@ -42,12 +42,12 @@ def prepare_loaders(data_dir):
     }
     dataloaders = {
         x: torch.utils.data.DataLoader(
-            image_datasets[x], batch_size=4, shuffle=True, num_workers=4
+            image_datasets[x], batch_size=32, shuffle=True, num_workers=8
         )
         for x in ["train", "test"]
     }
-    dataset_sizes = {x: len(image_datasets[x]) for x in ["train", "test"]}
 
+    dataset_sizes = {x: len(image_datasets[x]) for x in ["train", "test"]}
     return dataloaders, dataset_sizes
 
 
@@ -60,8 +60,8 @@ def train_model(
     best_acc = 0.0
 
     for epoch in range(num_epochs):
-        print(f"Epoch {epoch}/{num_epochs - 1}")
-        print("-" * 10)
+        logging.info(f"Epoch {epoch}/{num_epochs - 1}")
+        logging.info("-" * 10)
 
         # Each epoch has a training and validation phase
         for phase in ["train", "test"]:
@@ -73,12 +73,15 @@ def train_model(
             running_loss = 0.0
             running_corrects = 0
             i = 0
+
+            logging.info("Length in batches: ", len(dataloaders[phase]))
+            logging.info("Started training: ", len(dataloaders[phase]))
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
                 i += 1
                 inputs = inputs.to(device)
                 labels = labels.to(device)
-                # print(labels)
+                # logging.info(labels)
                 # zero the parameter gradients
                 optimizer.zero_grad()
 
@@ -100,25 +103,25 @@ def train_model(
 
                 if i % 50 == 0:
                     logging.info(f"Batch processed {i}...")
-                    
+
             if phase == "train":
                 scheduler.step()
 
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
 
-            print(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
+            logging.info(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
 
             # deep copy the model
             if phase == "test" and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
-        print()
+        logging.info()
 
     time_elapsed = time.time() - since
-    print(f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s")
-    print(f"Best val Acc: {best_acc:4f}")
+    logging.info(f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s")
+    logging.info(f"Best val Acc: {best_acc:4f}")
 
     # load best model weights
     model.load_state_dict(best_model_wts)
