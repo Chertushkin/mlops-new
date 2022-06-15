@@ -13,3 +13,5 @@ numpy
 sklearn
 notebook
 jupyter
+torch
+torchvision
