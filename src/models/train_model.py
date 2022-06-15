@@ -120,7 +120,9 @@ def train_model(
         logging.info()
 
     time_elapsed = time.time() - since
-    logging.info(f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s")
+    logging.info(
+        f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s"
+    )
     logging.info(f"Best val Acc: {best_acc:4f}")
 
     # load best model weights
@@ -159,6 +161,8 @@ def main(data_dir):
     )
     logging.info("Model was trained")
     logger.info(trained_model)
+    path = "models/version=1.pth"
+    torch.save(train_model, path)
 
 
 if __name__ == "__main__":
