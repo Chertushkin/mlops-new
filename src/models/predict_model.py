@@ -4,6 +4,7 @@ import os
 import time
 from pathlib import Path
 import glob
+import numpy as np
 
 import click
 import torch
@@ -31,7 +32,9 @@ def prepare_loaders(data_dir):
         image_dataset, batch_size=32, shuffle=True, num_workers=8
     )
 
-    dataset_size = image_dataset
+    class_names = image_dataset.classes
+    print(class_names)
+    dataset_size = len(image_dataset)
     return dataloader, dataset_size
 
 
@@ -95,6 +98,7 @@ def main(data_dir, model_path=None):
     dataloader, dataset_size = prepare_loaders(data_dir)
     predictions = predict_model(model, dataloader, dataset_size)
     print(predictions.shape)
+    print(np.array(predictions))
 
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

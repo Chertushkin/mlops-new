@@ -18,12 +18,13 @@ def move_files(filelist, phase, input_filepath, output_filepath):
         splits = str(x_file).split("/")
         splits.insert(3, phase)
         del splits[-3]
+        del splits[-3]
         new_file = "/".join(splits)
         new_file = new_file.replace(input_filepath, output_filepath)
         path = os.path.dirname(new_file)
         if not os.path.exists(path):
             os.makedirs(path)
-        sh.move(x_file, new_file)
+        sh.copy(x_file, new_file)
         if i % 1000 == 0:
             logging.info(f"Processed {i} files...")
 
