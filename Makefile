@@ -35,7 +35,7 @@ features:
 
 ## Train model
 train:
-	$(PYTHON_INTERPRETER) src/model/train_model.py data/processed/labeled-images
+	$(PYTHON_INTERPRETER) src/models/train_model.py data/processed/labeled-images
 
 
 ## Delete all compiled Python files
