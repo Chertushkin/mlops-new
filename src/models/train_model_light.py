@@ -10,6 +10,7 @@ import torch.optim as optim
 import wandb
 from dotenv import find_dotenv, load_dotenv
 from pytorch_lightning.callbacks import LearningRateMonitor
+from pytorch_lightning.loggers import WandbLogger
 from torch.optim import lr_scheduler
 from torchvision import datasets, models, transforms
 
@@ -110,13 +111,14 @@ def prepare_loaders(data_dir):
 
 def train_model(model, dataloaders):
     # Create a PyTorch Lightning trainer with the generation callback
-
+    wandb_logger = WandbLogger()
     trainer = pl.Trainer(
         enable_checkpointing=False,
+        logger=wandb_logger,
         # We run on a single GPU (if possible)
         gpus=1 if str(device) == "cuda" else 0,
         # How many epochs to train for if no patience is set
-        max_epochs=2,
+        max_epochs=10,
         callbacks=[
             # Save the best checkpoint based on the maximum val_acc recorded. Saves only weights and not optimizer
             LearningRateMonitor("epoch"),
@@ -156,7 +158,7 @@ def main(data_dir):
     logger = logging.getLogger(__name__)
     logger.info("training model from processed data")
 
-    wandb.init(project='hyperkvasir')
+    wandb.init(project="hyperkvasir")
     dataloaders, dataset_sizes = prepare_loaders(data_dir)
 
     model_ft = models.resnet18(pretrained=True)
@@ -169,10 +171,10 @@ def main(data_dir):
 
     trained_model = train_model(model_ft, dataloaders)
 
-    logging.info("Model was trained")
-    logger.info(trained_model)
     path = "models/version=2.pth"
     torch.save(trained_model, path)
+
+    logging.info(f"Model was trained and saved: {path}")
 
 
 if __name__ == "__main__":
