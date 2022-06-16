@@ -1,18 +1,17 @@
-import copy
 import logging
 import os
-import time
 from pathlib import Path
 
 import click
+import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import wandb
 from dotenv import find_dotenv, load_dotenv
+from pytorch_lightning.callbacks import LearningRateMonitor
 from torch.optim import lr_scheduler
 from torchvision import datasets, models, transforms
-import pytorch_lightning as pl
-from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 
 # cudnn.benchmark = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -52,6 +51,7 @@ class ResNetModule(pl.LightningModule):
         # Logs the accuracy per epoch to tensorboard (weighted average over batches)
         self.log("train_acc", acc, on_step=False, on_epoch=True)
         self.log("train_loss", loss)
+        wandb.log({"train loss": loss, "train acc": acc})
         return loss  # Return tensor to call ".backward" on
 
     def validation_step(self, batch, batch_idx):
@@ -61,6 +61,7 @@ class ResNetModule(pl.LightningModule):
         acc = (labels == preds).float().mean()
         # By default logs it per epoch (weighted average over batches)
         self.log("val_acc", acc)
+        wandb.log({"val acc": acc})
 
     def test_step(self, batch, batch_idx):
         inputs, labels = batch
@@ -69,6 +70,7 @@ class ResNetModule(pl.LightningModule):
         acc = (labels == preds).float().mean()
         # By default logs it per epoch (weighted average over batches), and returns it afterwards
         self.log("test_acc", acc)
+        wandb.log({"test acc": acc})
 
 
 def prepare_loaders(data_dir):
@@ -108,7 +110,7 @@ def prepare_loaders(data_dir):
 
 def train_model(model, dataloaders):
     # Create a PyTorch Lightning trainer with the generation callback
-    
+
     trainer = pl.Trainer(
         enable_checkpointing=False,
         # We run on a single GPU (if possible)
@@ -139,9 +141,7 @@ def train_model(model, dataloaders):
     trainer.fit(model, dataloaders["train"], dataloaders["test"])
 
     # Test best model on validation and test set
-    test_result = trainer.test(
-        model, dataloaders["test"], verbose=False
-    )
+    test_result = trainer.test(model, dataloaders["test"], verbose=False)
     result = {"test": test_result[0]["test_acc"]}
     print(result)
     return model
