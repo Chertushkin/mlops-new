@@ -111,7 +111,6 @@ def train_model(model, dataloaders):
     
     trainer = pl.Trainer(
         enable_checkpointing=False,
-        logger=False,
         # We run on a single GPU (if possible)
         gpus=1 if str(device) == "cuda" else 0,
         # How many epochs to train for if no patience is set
@@ -122,6 +121,14 @@ def train_model(model, dataloaders):
         ],  # Log learning rate every epoch
         progress_bar_refresh_rate=1,
     )  # In case your notebook crashes due to the progress bar, consider increasing the refresh rate
+    trainer.logger._log_graph = (
+        True  # If True, we plot the computation graph in tensorboard
+    )
+    trainer.logger._default_hp_metric = (
+        None  # Optional logging argument that we don't need
+    )
+
+    # Check whether pretrained model exists. If yes, load it and skip training
     pl.seed_everything(42)
     model_ft = models.resnet18(pretrained=True)
     num_ftrs = model_ft.fc.in_features
