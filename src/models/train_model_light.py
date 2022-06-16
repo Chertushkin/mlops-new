@@ -134,7 +134,8 @@ def train_model(model, dataloaders):
 
     # Check whether pretrained model exists. If yes, load it and skip training
     pl.seed_everything(42)
-    model_ft = models.resnet101(pretrained=True)
+    model_ft = models.efficientnet_b2(pretrained=True)
+    # model_ft = models.resnet101(pretrained=True)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 19)
     model_ft = model_ft.to(device)
