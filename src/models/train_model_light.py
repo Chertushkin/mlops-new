@@ -134,14 +134,18 @@ def train_model(dataloaders):
 
     # Check whether pretrained model exists. If yes, load it and skip training
     pl.seed_everything(42)
-    
+    num_classes = 19
+
     # model_ft = models.resnet101(pretrained=True)
     # num_ftrs = model_ft.fc.in_features
-    # model_ft.fc = nn.Linear(num_ftrs, 19)
+    # model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
     model_ft = models.efficientnet_b2(pretrained=True)
-    print(model_ft)
-    model_ft._fc = torch.nn.Linear(model_ft._fc.in_features, 19)
+    model_ft.classifier[1] = nn.Linear(
+        in_features=model_ft.classifier[1].in_features,
+        out_features=num_classes,
+        bias=True,
+    )
     model_ft = model_ft.to(device)
 
     model = ResNetModule(model_ft)
