@@ -109,7 +109,7 @@ def prepare_loaders(data_dir):
     return dataloaders, dataset_sizes
 
 
-def train_model(model, dataloaders):
+def train_model(dataloaders):
     # Create a PyTorch Lightning trainer with the generation callback
     wandb_logger = WandbLogger()
     trainer = pl.Trainer(
@@ -134,10 +134,13 @@ def train_model(model, dataloaders):
 
     # Check whether pretrained model exists. If yes, load it and skip training
     pl.seed_everything(42)
-    model_ft = models.efficientnet_b2(pretrained=True)
+    
     # model_ft = models.resnet101(pretrained=True)
-    num_ftrs = model_ft.fc.in_features
-    model_ft.fc = nn.Linear(num_ftrs, 19)
+    # num_ftrs = model_ft.fc.in_features
+    # model_ft.fc = nn.Linear(num_ftrs, 19)
+
+    model_ft = models.efficientnet_b2(pretrained=True)
+    model_ft._fc = torch.nn.Linear(model_ft._fc.in_features, 19)
     model_ft = model_ft.to(device)
 
     model = ResNetModule(model_ft)
@@ -162,15 +165,7 @@ def main(data_dir):
     wandb.init(project="hyperkvasir")
     dataloaders, dataset_sizes = prepare_loaders(data_dir)
 
-    model_ft = models.resnet18(pretrained=True)
-    num_ftrs = model_ft.fc.in_features
-    # Here the size of each output sample is set to 2.
-    # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
-    model_ft.fc = nn.Linear(num_ftrs, 19)
-
-    model_ft = model_ft.to(device)
-
-    trained_model = train_model(model_ft, dataloaders)
+    trained_model = train_model(dataloaders)
 
     path = "models/version=2.pth"
     torch.save(trained_model, path)
