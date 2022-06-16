@@ -16,3 +16,4 @@ jupyter
 torch
 torchvision
 pytorch-lightning
+wandb
