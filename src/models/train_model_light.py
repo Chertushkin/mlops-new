@@ -100,7 +100,7 @@ def prepare_loaders(data_dir):
     }
     dataloaders = {
         x: torch.utils.data.DataLoader(
-            image_datasets[x], batch_size=128, shuffle=True, num_workers=4
+            image_datasets[x], batch_size=64, shuffle=True, num_workers=4
         )
         for x in ["train", "test"]
     }
@@ -134,7 +134,7 @@ def train_model(model, dataloaders):
 
     # Check whether pretrained model exists. If yes, load it and skip training
     pl.seed_everything(42)
-    model_ft = models.resnet18(pretrained=True)
+    model_ft = models.resnet101(pretrained=True)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 19)
     model_ft = model_ft.to(device)
