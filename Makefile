@@ -37,6 +37,11 @@ features:
 train:
 	$(PYTHON_INTERPRETER) src/models/train_model.py data/processed/labeled-images
 
+## Train model lighting
+train_light:
+	$(PYTHON_INTERPRETER) src/models/train_model_light.py data/processed/labeled-images
+
+
 ## Train model
 predict:
 	$(PYTHON_INTERPRETER) src/models/predict_model.py data/processed/labeled-images/test
