@@ -52,7 +52,7 @@ def prepare_loaders(data_dir):
 
 
 def train_model(
-    model, criterion, optimizer, scheduler, dataloaders, dataset_sizes, num_epochs=2
+    model, criterion, optimizer, scheduler, dataloaders, dataset_sizes, num_epochs=3
 ):
     since = time.time()
 
@@ -155,7 +155,7 @@ def main(data_dir):
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
     trained_model = train_model(
-        model_ft, criterion, optimizer_ft, exp_lr_scheduler, dataloaders, dataset_sizes, num_epochs=1
+        model_ft, criterion, optimizer_ft, exp_lr_scheduler, dataloaders, dataset_sizes, num_epochs=100
     )
     logging.info("Model was trained")
     logger.info(trained_model)
