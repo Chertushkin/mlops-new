@@ -155,6 +155,8 @@ def main(data_dir):
     """
     logger = logging.getLogger(__name__)
     logger.info("training model from processed data")
+
+    wandb.init('hyperkvasir')
     dataloaders, dataset_sizes = prepare_loaders(data_dir)
 
     model_ft = models.resnet18(pretrained=True)
