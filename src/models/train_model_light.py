@@ -118,7 +118,7 @@ def train_model(model, dataloaders):
         # We run on a single GPU (if possible)
         gpus=1 if str(device) == "cuda" else 0,
         # How many epochs to train for if no patience is set
-        max_epochs=10,
+        max_epochs=7,
         callbacks=[
             # Save the best checkpoint based on the maximum val_acc recorded. Saves only weights and not optimizer
             LearningRateMonitor("epoch"),
