@@ -140,6 +140,7 @@ def train_model(dataloaders):
     # model_ft.fc = nn.Linear(num_ftrs, 19)
 
     model_ft = models.efficientnet_b2(pretrained=True)
+    print(model_ft)
     model_ft._fc = torch.nn.Linear(model_ft._fc.in_features, 19)
     model_ft = model_ft.to(device)
 
