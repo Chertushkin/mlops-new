@@ -118,7 +118,7 @@ def train_model(dataloaders):
         # We run on a single GPU (if possible)
         gpus=1 if str(device) == "cuda" else 0,
         # How many epochs to train for if no patience is set
-        max_epochs=30,
+        max_epochs=50,
         callbacks=[
             LearningRateMonitor("epoch"),
         ],
