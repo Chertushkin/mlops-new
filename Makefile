@@ -33,10 +33,6 @@ data: requirements
 features:
 	$(PYTHON_INTERPRETER) src/features/build_features.py data/processed data/interim
 
-## Train model
-train:
-	$(PYTHON_INTERPRETER) src/models/train_model.py data/processed/labeled-images
-
 ## Train model lighting
 train_light:
 	$(PYTHON_INTERPRETER) src/models/train_model_light.py data/processed/labeled-images
