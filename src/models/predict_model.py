@@ -1,17 +1,11 @@
-import copy
-import logging
-import os
-import time
-from pathlib import Path
 import glob
-import numpy as np
+import logging
+from pathlib import Path
 
 import click
+import numpy as np
 import torch
-import torch.nn as nn
-import torch.optim as optim
 from dotenv import find_dotenv, load_dotenv
-from torch.optim import lr_scheduler
 from torchvision import datasets, models, transforms
 
 # cudnn.benchmark = True

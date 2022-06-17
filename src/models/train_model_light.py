@@ -118,13 +118,12 @@ def train_model(dataloaders):
         # We run on a single GPU (if possible)
         gpus=1 if str(device) == "cuda" else 0,
         # How many epochs to train for if no patience is set
-        max_epochs=7,
+        max_epochs=30,
         callbacks=[
-            # Save the best checkpoint based on the maximum val_acc recorded. Saves only weights and not optimizer
             LearningRateMonitor("epoch"),
-        ],  # Log learning rate every epoch
+        ],
         progress_bar_refresh_rate=1,
-    )  # In case your notebook crashes due to the progress bar, consider increasing the refresh rate
+    )
     trainer.logger._log_graph = (
         True  # If True, we plot the computation graph in tensorboard
     )
@@ -140,12 +139,6 @@ def train_model(dataloaders):
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
-    # model_ft = models.efficientnet_b2(pretrained=True)
-    # model_ft.classifier[1] = nn.Linear(
-    #     in_features=model_ft.classifier[1].in_features,
-    #     out_features=num_classes,
-    #     bias=True,
-    # )
     model_ft = model_ft.to(device)
 
     model = ResNetModule(model_ft)
