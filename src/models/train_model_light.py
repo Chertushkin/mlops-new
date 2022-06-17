@@ -173,7 +173,7 @@ def main(data_dir):
     trained_model = train_model(dataloaders)
 
     path = "models/version=2.pth"
-    torch.save(trained_model, path)
+    torch.save(trained_model.state_dict(), path)
 
     logging.info(f"Model was trained and saved: {path}")
 

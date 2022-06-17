@@ -95,13 +95,15 @@ def main(data_dir, model_path=None):
 
     if model_path is None:
         model_path = get_most_recent_path()
-    model = torch.load(model_path)
-    print(model)
+
+    model = models.resnet34()
+    model.load_state_dict(torch.load(model_path))
 
     dataloader, dataset_size = prepare_loaders(data_dir)
     predictions = predict_model(model, dataloader, dataset_size)
     print(predictions.shape)
     print(np.array(predictions))
+
 
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
