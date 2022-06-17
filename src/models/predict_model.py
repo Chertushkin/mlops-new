@@ -72,8 +72,11 @@ def get_lexem(s, pattern):
     return None
 
 
-def get_most_recent_path():
-    paths = glob.glob("models/*.pth")
+def get_most_recent_path(path=None):
+    if path is None:
+        paths = glob.glob("models/*.pth")
+    else:
+        paths = glob.glob(f"{path}/*.pth")
     versions = [(x, int(get_lexem(x, "version"))) for x in paths]
     versions = sorted(versions, reverse=True, key=lambda x: x[1])
     latest_version = versions[0]
