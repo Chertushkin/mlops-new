@@ -38,6 +38,7 @@ def prepare_loaders(data_dir):
 def predict_model(model, dataloader, dataset_size):
     ls = []
     model.eval()  # Set model to evaluate mode
+    model.to(device)
     i = 0
     logging.info(f"Length in batches: {len(dataloader)}")
     logging.info("Started predicting...")
