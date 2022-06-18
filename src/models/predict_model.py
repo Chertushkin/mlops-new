@@ -3,10 +3,13 @@ import logging
 from pathlib import Path
 
 import click
+import torch.nn as nn
 import numpy as np
 import torch
 from dotenv import find_dotenv, load_dotenv
 from torchvision import datasets, models, transforms
+
+from src.models.train_model_light import ResNetModule
 
 # cudnn.benchmark = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -23,7 +26,7 @@ def prepare_loaders(data_dir):
     )
     image_dataset = datasets.ImageFolder(data_dir, data_transform)
     dataloader = torch.utils.data.DataLoader(
-        image_dataset, batch_size=32, shuffle=True, num_workers=8
+        image_dataset, batch_size=32, shuffle=False, num_workers=8
     )
 
     class_names = image_dataset.classes
@@ -78,6 +81,17 @@ def get_most_recent_path(path=None):
     return latest_path
 
 
+def get_model(model_path):
+    num_classes = 19
+    model_ft = models.resnet34(pretrained=True)
+    num_ftrs = model_ft.fc.in_features
+    model_ft.fc = nn.Linear(num_ftrs, num_classes)
+
+    model = ResNetModule(model_ft)
+    model.load_state_dict(torch.load(model_path))
+    return model
+
+
 @click.command()
 @click.argument("data_dir", type=click.Path(exists=True))
 def main(data_dir, model_path=None):
@@ -89,9 +103,7 @@ def main(data_dir, model_path=None):
 
     if model_path is None:
         model_path = get_most_recent_path()
-
-    model = models.resnet34()
-    model.load_state_dict(torch.load(model_path))
+    model = get_model(model_path)
 
     dataloader, dataset_size = prepare_loaders(data_dir)
     predictions = predict_model(model, dataloader, dataset_size)
