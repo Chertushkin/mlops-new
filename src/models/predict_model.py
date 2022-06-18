@@ -61,6 +61,34 @@ def predict_model(model, dataloader, dataset_size):
     return predictions
 
 
+def test_model(model, dataloader, dataset_size):
+    ls, all_labels = [], []
+    model.eval()  # Set model to evaluate mode
+    model.to(device)
+    i = 0
+    logging.info(f"Length in batches: {len(dataloader)}")
+    logging.info("Started predicting...")
+    # Iterate over data.
+    for inputs, labels in dataloader:
+        i += 1
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        # forward
+        # track history if only in train
+        with torch.set_grad_enabled(False):
+            outputs = model(inputs)
+            _, preds = torch.max(outputs, 1)
+            ls.append(preds)
+            all_labels.append(labels)
+
+        if i % 50 == 0:
+            logging.info(f"Batch processed {i}...")
+    predictions = torch.cat(ls)
+    all_labels = torch.cat(all_labels)
+    return predictions, all_labels
+
+
 def get_lexem(s, pattern):
     lexems = s.split("/")
     for lexem in lexems:
