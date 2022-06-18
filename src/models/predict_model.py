@@ -84,6 +84,7 @@ def get_most_recent_path(path=None):
 def get_model(model_path):
     num_classes = 19
     model_ft = models.resnet34(pretrained=True)
+    model_ft.to(device)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
